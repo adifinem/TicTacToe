@@ -6,12 +6,12 @@
   <p>See all <a href="<?= $index ?>">games</a></a>
 
   <h1>Game Stats</h1>
-  <p>Statistics for played games</p>
-  <? if(!@$games) { ?>
-    No games yet!
-  <? } else { ?>
-    <ol><? foreach my $game(@$games) { ?>
-      <li><a href='<?= $game ?>'><?= $game ?></a></li>
-    <? } ?></ol>
-  <? } ?>
+  <p>Total Games: <?= $total ?></p>
+  <p>Open Games: <?= $wins->{in_play} ?></p>
+  <p>X Wins: <?= $wins->{X_wins} ?></p>
+  <p>O Wins: <?= $wins->{O_wins} ?></p>
+  <p>Draw: <?= $wins->{draw} ?></p>
+  <p>Total Moves for All Games: <?= $moves->{total} ?></p>
+  <p>Average Moves per Game: <?= $moves->{avg} ?></p>
+
 <? } ?>

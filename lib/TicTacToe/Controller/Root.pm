@@ -60,7 +60,6 @@ sub root :Chained('/') PathPart('') CaptureArgs(0) {
   # game, play thyself!
   sub gen_random :GET Chained(root) PathPart('rand') Args(1) {
     my ($self, $c, $i) = @_;
-    my @games = $c->model("Schema::Game")->all;
 
     for (1..$i) {
       my $game = $c->model("Schema::Game")->new_game();
@@ -76,16 +75,25 @@ sub root :Chained('/') PathPart('') CaptureArgs(0) {
 
   sub view_stats :GET Chained(root) PathPart('stats') Args(0) {
     my ($self, $c) = @_;
-    my @games = $c->model("Schema::Game")->all;
+    my ($wins, $moves, $games) = ();
 
-    my @links_to_games = map {
-       $c->uri($self->show_board, [$_->id])
-    } @games;
-
+    $c->model("Schema::Game")->map(
+      sub {
+        my ($self, $result) = @_;
+        my $game = $result->board_rs->last_in_game();
+        $wins->{$game->status}++;
+        # could just use $games[$#games]->board_id but this seems more accurate
+        # and edge-case-proof (if we implement deleting games, for instance)
+        $moves->{total} += $game->move;
+      }
+    );
+    $games += $wins->{$_} for keys %$wins;
+    $moves->{avg} = int($moves->{total} / $games);
     $c->view->ok({
-      total => scalar @games,
-      index => $c->uri($self->games_index),
-      games => \@links_to_games});
+      total => $games,
+      wins  => $wins,
+      moves => $moves,
+      index => $c->uri($self->games_index)});
   }
 
   sub not_found :Chained(root) PathPart('') Args {
