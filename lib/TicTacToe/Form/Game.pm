@@ -37,7 +37,23 @@ sub update_model {
 
 }
 
-sub prepare_error_response {  
+sub get_errors {
+  my $self = shift;
+  my @errors = ();
+  if(@{$self->form_errors} > 0) {
+    push(@errors, "Form Error(s): ");
+    push(@errors, $_) for @{$self->form_errors};
+  }
+  if(keys $self->fif > 0) {
+    push(@errors, "Field Error(s): ");
+    for my $field (keys $self->fif){
+      push(@errors, $field . ": " . $_) for @{$self->errors_by_name->{$field}};
+    }
+  }
+  return \@errors;
+}
+
+sub prepare_error_response {
   return +{
     form_error => $_[0]->form_errors,
     error_by_field => $_[0]->errors_by_name,
