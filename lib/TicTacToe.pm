@@ -27,6 +27,8 @@ __PACKAGE__->config(
   'Controller::Root' => {
     namespace => '',
     show_board => 'Game.game',
+    games_index => 'Root.view_games',
+    stats_index => 'Root.view_stats',
   },
   'Controller::Game' => {
     games_index => 'Root.view_games',
@@ -125,7 +127,7 @@ a game that does not exist).  Example:
     X-Catalyst: 5.90085
     Content-Length: 164
 
-    { 
+    {
       "whos_turn":null,
       "status":"X_wins",
       "available_next_moves":[],
