@@ -10,6 +10,7 @@
     <ol><? foreach my $game(@$games) { ?>
       <li><a href='<?= $game ?>'><?= $game ?></a></li>
     <? } ?></ol>
+    <p><a href='<?= $stats ?>'>Game Stats</a></p>
   <? } ?>
   <? if($errors) { ?>
     <?= include '_form_error' ?>
