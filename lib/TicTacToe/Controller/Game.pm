@@ -25,6 +25,7 @@ sub root :Chained(../root) PathPart('') CaptureArgs(1) {
 
     if($form->posted && !$form->is_valid) {
       ## TODO, needs a template for HTML view
+      ## -- does it? it shows a nice error on bad input as-is...
       $c->view->detach_unprocessable_entity();
     }
 
