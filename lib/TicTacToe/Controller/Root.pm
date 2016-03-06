@@ -38,7 +38,7 @@ sub root :Chained('/') PathPart('') CaptureArgs(0) {
       });
     } else {
       $c->stash->{form_errors} = $form->get_errors();
-      $c->go('/view_games'); # if view is HTML?
+      $c->go('/view_games'); # if view is HTML might be better
       $c->view->unprocessable_entity($form);
     }
   }
