@@ -5,7 +5,9 @@ use MooseX::MethodAttributes;
 
 extends 'Catalyst::Controller';
 
-has 'show_board' => (is=>'ro', required=>1);
+has 'show_board'  => (is=>'ro', required=>1);
+has 'games_index' => (is=>'ro', required=>1);
+has 'stats_index' => (is=>'ro', required=>1);
 
 sub root :Chained('/') PathPart('') CaptureArgs(0) {
   my ($self, $c) = @_;
@@ -36,7 +38,7 @@ sub root :Chained('/') PathPart('') CaptureArgs(0) {
       });
     } else {
       $c->stash->{form_errors} = $form->get_errors();
-      $c->go('/view_games');
+      $c->go('/view_games'); # if view is HTML?
       $c->view->unprocessable_entity($form);
     }
   }
@@ -51,16 +53,39 @@ sub root :Chained('/') PathPart('') CaptureArgs(0) {
     $c->view->ok({
       errors => $c->stash->{form_errors},
       form => $form,
+      stats => $c->uri($self->stats_index),
       games => \@links_to_games});
   }
 
-  sub game_stats :GET Chained(root) PathPart('stats') Args(0) {
-    my ($self, $c) = @_;
-    $c->view->data->set(
-      foo => "bar",
-    );
+  # game, play thyself!
+  sub gen_random :GET Chained(root) PathPart('rand') Args(1) {
+    my ($self, $c, $i) = @_;
+    my @games = $c->model("Schema::Game")->all;
 
-    $c->view->ok;
+    for (1..$i) {
+      my $game = $c->model("Schema::Game")->new_game();
+      my ($who, @moves) = ();
+      while($game->status eq "in_play") {
+        @moves = $game->available_moves();
+        $game->select_move($moves[int(rand(scalar @moves))]);
+      }
+      $c->log->info("Generated Game: " . $game->id . " - " . $game->status);
+    }
+    $c->go('/view_stats');
+  }
+
+  sub view_stats :GET Chained(root) PathPart('stats') Args(0) {
+    my ($self, $c) = @_;
+    my @games = $c->model("Schema::Game")->all;
+
+    my @links_to_games = map {
+       $c->uri($self->show_board, [$_->id])
+    } @games;
+
+    $c->view->ok({
+      total => scalar @games,
+      index => $c->uri($self->games_index),
+      games => \@links_to_games});
   }
 
   sub not_found :Chained(root) PathPart('') Args {
