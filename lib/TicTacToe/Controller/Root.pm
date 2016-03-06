@@ -35,7 +35,8 @@ sub root :Chained('/') PathPart('') CaptureArgs(0) {
         new_game_url => $game_url,
       });
     } else {
-      ## TODO, needs a template for HTML view
+      $c->stash->{form_errors} = $form->get_errors();
+      $c->go('/view_games');
       $c->view->unprocessable_entity($form);
     }
   }
@@ -48,8 +49,18 @@ sub root :Chained('/') PathPart('') CaptureArgs(0) {
     } $c->model("Schema::Game")->all;
 
     $c->view->ok({
+      errors => $c->stash->{form_errors},
       form => $form,
       games => \@links_to_games});
+  }
+
+  sub game_stats :GET Chained(root) PathPart('stats') Args(0) {
+    my ($self, $c) = @_;
+    $c->view->data->set(
+      foo => "bar",
+    );
+
+    $c->view->ok;
   }
 
   sub not_found :Chained(root) PathPart('') Args {

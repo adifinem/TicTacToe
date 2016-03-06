@@ -11,6 +11,9 @@
       <li><a href='<?= $game ?>'><?= $game ?></a></li>
     <? } ?></ol>
   <? } ?>
+  <? if($errors) { ?>
+    <?= include '_form_error' ?>
+  <? } ?>
   <h1>Start a new game</h1>
   <p>Choose the first move for 'X' in a new game</p>
   <?= include '_form' ?>
