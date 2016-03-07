@@ -68,27 +68,29 @@ sub root :Chained('/') PathPart('') CaptureArgs(0) {
         @moves = $game->available_moves();
         $game->select_move($moves[int(rand(scalar @moves))]);
       }
-      $c->log->info("Generated Game: " . $game->id . " - " . $game->status);
+      #$c->log->info("Generated Game: " . $game->id . " - " . $game->status);
     }
     $c->go('/view_stats');
   }
 
   sub view_stats :GET Chained(root) PathPart('stats') Args(0) {
     my ($self, $c) = @_;
-    my ($wins, $moves, $games) = ();
+    my ($wins, $moves) = ();
+    my $games = 0;
 
     $c->model("Schema::Game")->map(
       sub {
         my ($self, $result) = @_;
         my $game = $result->board_rs->last_in_game();
         $wins->{$game->status}++;
+        $games++;
         # could just use $games[$#games]->board_id but this seems more accurate
         # and edge-case-proof (if we implement deleting games, for instance)
         $moves->{total} += $game->move;
       }
     );
-    $games += $wins->{$_} for keys %$wins;
-    $moves->{avg} = int($moves->{total} / $games);
+
+    $moves->{avg} = int($moves->{total} / $games) if $games != 0;
     $c->view->ok({
       total => $games,
       wins  => $wins,
