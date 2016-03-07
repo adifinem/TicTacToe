@@ -8,7 +8,8 @@
     No games yet!
   <? } else { ?>
     <ol><? foreach my $game(@$games) { ?>
-      <li><a href='<?= $game ?>'><?= $game ?></a></li>
+      <li><a href='<?= $game ?>'><?= $game ?></a>
+        <a href='<?= $game . "/detail" ?>'>Move Details</a></li>
     <? } ?></ol>
     <p><a href='<?= $stats ?>'>Game Stats</a></p>
   <? } ?>

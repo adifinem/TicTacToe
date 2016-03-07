@@ -10,6 +10,10 @@ sub last_in_game {
   $self->order_by({ -desc => 'move' })->first;
 }
 
+sub all_moves {
+  my $self = shift;
+  $self->order_by('move')->hri->all;
+}
 
 1;
 

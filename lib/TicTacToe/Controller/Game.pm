@@ -32,4 +32,21 @@ sub root :Chained(../root) PathPart('') CaptureArgs(1) {
     $c->view->ok;
   }
 
+  sub detail :GET Chained('root') PathPart('detail') Args(0) {
+    my ($self, $c) = @_;
+    my @moves;
+
+    $c->model("Schema::Game")->map(
+      sub {
+        my ($self, $result) = @_;
+        @moves = $result->board_rs->all_moves();
+        $c->log->info(@moves);
+      }
+    );
+    $c->view->ok({
+      moves => \@moves,
+      index => $c->uri($self->games_index),
+    });
+  }
+
 __PACKAGE__->meta->make_immutable;
