@@ -40,7 +40,6 @@ sub root :Chained(../root) PathPart('') CaptureArgs(1) {
       sub {
         my ($self, $result) = @_;
         @moves = $result->board_rs->all_moves();
-        $c->log->info(@moves);
       }
     );
     $c->view->ok({
