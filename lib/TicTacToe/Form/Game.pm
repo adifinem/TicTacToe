@@ -44,9 +44,9 @@ sub get_errors {
     push(@errors, "Form Error(s): ");
     push(@errors, $_) for @{$self->form_errors};
   }
-  if(keys $self->fif > 0) {
+  if(keys %{$self->fif} > 0) {
     push(@errors, "Field Error(s): ");
-    for my $field (keys $self->fif){
+    for my $field (keys %{$self->fif}){
       push(@errors, $field . ": " . $_) for @{$self->errors_by_name->{$field}};
     }
   }
