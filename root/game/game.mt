@@ -9,5 +9,7 @@
   <? if($game->status eq 'in_play') { ?>
   <h1>Make a new move in this game</h1>
   <?= include '_form' ?>
+  <? } else { ?>
+    View full game: <a href="<?= $moves ?>">Move History</a></a>
   <? } ?>
 <? } ?>

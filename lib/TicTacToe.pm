@@ -32,6 +32,7 @@ __PACKAGE__->config(
   },
   'Controller::Game' => {
     games_index => 'Root.view_games',
+    show_moves => 'Game.detail',
   },
   'Model::Schema' => {
     traits => ['Result'],
