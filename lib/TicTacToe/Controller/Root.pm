@@ -57,7 +57,7 @@ sub root :Chained('/') PathPart('') CaptureArgs(0) {
       games => \@links_to_games});
   }
 
-  # game, play thyself!
+  # game, play thyself! -- laziness is a virtue!
   sub gen_random :GET Chained(root) PathPart('rand') Args(1) {
     my ($self, $c, $i) = @_;
 
